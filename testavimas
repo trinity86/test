@@ -1,0 +1,47 @@
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Kontras {
+
+
+
+        @Test
+        public void search() {
+            System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+            WebDriver driver = new ChromeDriver();
+            WebDriverWait wait = new WebDriverWait(driver, 5);
+            driver.get("https://demo.opencart.com/");
+            driver.manage().window().maximize();
+            Assert.assertEquals("Your Store", driver.getTitle());
+            System.out.println("Title");
+
+            //Search for ipod
+            driver.findElement(By.cssSelector("div#search>input")).sendKeys("iPod");
+            driver.findElement(By.cssSelector("div#search>span>button")).click();
+            WebElement element = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(By.cssSelector("div#content>div:nth-of-type(4)>div:nth-of-type(2)"))
+            );
+            Assert.assertTrue(element.getText().contains("Showing 1 to 4 of 4 (1 Pages)"));
+            //Cart
+            driver.findElement(By.xpath("//div[@id='content']/div[3]/div[2]/div[1]/div[2]/div[2]/button[1]")).click();
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#product-search>div>i")));
+            Assert.assertEquals(" Success: You have added iPod Nano to your shopping cart!", " Success: You have added iPod Nano to your shopping cart!");
+
+            driver.findElement(By.cssSelector("div#cart>button")).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cart-total")));
+            Assert.assertEquals("1 item(s) - $122.00", "1 item(s) - $122.00");
+            System.out.println("1 item");
+
+            
+driver.close();
+
+
+        }
+    }
